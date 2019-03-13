@@ -1,17 +1,25 @@
 import React from 'react'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Button from '@material-ui/core/Button'
-import DeleteIcon from '@material-ui/icons/Delete'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { NavigationDrawer, ListItem } from 'react-md'
+
+import Auth from 'components/Auth'
 
 class App extends React.Component {
   render() {
     return (
-      <>
-        <CssBaseline />
-        <p>Cobras!</p>
-        <Button>clicko</Button>
-        <DeleteIcon />
-      </>
+      <NavigationDrawer
+        navItems={[<ListItem primaryText="hissss" />]}
+        toolbarTitle="Cobras!"
+      >
+        <Auth />
+
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={() => <div>index</div>} />
+            <Route path="/franchises" component={() => <div>franchises</div>} />
+          </Switch>
+        </BrowserRouter>
+      </NavigationDrawer>
     )
   }
 }
