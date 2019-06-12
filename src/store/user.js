@@ -1,7 +1,5 @@
 import firebase from 'firebase'
 
-import config from 'config'
-
 const SET_USER = 'SET_USER'
 const UPDATE_USER = 'UPDATE_USER'
 
@@ -32,8 +30,6 @@ export const user = (state = null, action) => {
 }
 
 export const authInit = (dispatch, state) => {
-  firebase.initializeApp(config.firebase)
-
   const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       dispatch(updateUser(user))
@@ -57,6 +53,6 @@ export const logout = (dispatch, state) => {
   // Next do the actual logout
   firebase.auth().signOut()
 
-  // Finally reload the page to return things to an empty state
-  window.location.reload()
+  // Finally send the user back to the index
+  window.location = window.location.protocol + '//' + window.location.host
 }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
 
-import { authInit, logout } from 'store/user'
+import { authInit } from 'store/user'
 
 class Auth extends React.Component {
   componentWillMount() {
@@ -13,7 +13,7 @@ class Auth extends React.Component {
   render() {
     let loading = null
 
-    if (!this.props.user) {
+    if (!this.props.user || !this.props.user.hasOwnProperty('isAnonymous')) {
       loading = (
         <div>loading...</div>
       )
@@ -32,20 +32,10 @@ class Auth extends React.Component {
       })
     }
 
-let logout = null
-    if (this.props.user && !this.props.user.isAnonymous) {
-      logout = (
-        <div onClick={this.props.logout}>
-Hello, {this.props.user.displayName}!
-</div>
-      )
-    }
-
     return (
       <>
         <div id="firebaseui-auth-container"></div>
         {loading}
-        {logout}
       </>
     )
   }
@@ -56,8 +46,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  authInit: () => dispatch(authInit),
-  logout: () => dispatch(logout)
+  authInit: () => dispatch(authInit)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth)

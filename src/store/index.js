@@ -3,9 +3,11 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 
 import { user } from 'store/user'
+import { music } from 'store/music'
 
 const rootReducer = combineReducers({
-  user
+  user,
+  music
 })
 
 const store = createStore(
