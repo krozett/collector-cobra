@@ -29,7 +29,7 @@ export const user = (state = null, action) => {
   }
 }
 
-export const authInit = (dispatch, state) => {
+export const authInit = () => (dispatch, state) => {
   const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       dispatch(updateUser(user))
@@ -46,7 +46,7 @@ export const authInit = (dispatch, state) => {
   }))
 }
 
-export const logout = (dispatch, state) => {
+export const logout = () => (dispatch, state) => {
   // First unsubscribe the auth state watcher to stop cascading events
   state().user.unsubscribe()
 

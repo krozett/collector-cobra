@@ -3,24 +3,15 @@ import { connect } from 'react-redux'
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import { NavigationDrawer, ListItem, FontIcon, Avatar } from 'react-md'
 
+import types from 'types'
 import { logout } from 'store/user'
-import Franchises from 'pages/Franchises'
-import Music from 'pages/Music'
+import Collection from 'pages/Collection'
+import Item from 'pages/Item'
 import Auth from 'components/Auth'
 
-class App extends React.Component {
-  static routes = [{
-    path: '/franchises',
-    component: Franchises,
-    label: 'Franchises',
-    icon: 'collections'
-  }, {
-    path: '/music',
-    component: Music,
-    label: 'Music',
-    icon: 'music_note'
-  }]
+// icon: collections
 
+class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
@@ -52,22 +43,24 @@ class App extends React.Component {
   }
 
   renderNavItems() {
-    return App.routes.map((route) => {
-      let icon = null
-      if (route.icon) {
-        icon = (
-          <FontIcon>
-            {route.icon}
-          </FontIcon>
-        )
-      }
+    let keys = Object.keys(types)
+    keys.sort()
+
+    return keys.map((key) => {
+      let type = types[key]
+
+      const icon = (
+        <FontIcon>
+          {type.icon}
+        </FontIcon>
+      )
 
       return (
         <ListItem
-          key={route.path}
+          key={key}
           component={Link}
-          to={route.path}
-          primaryText={route.label}
+          to={'/' + key}
+          primaryText={type.label}
           leftIcon={icon}
         />
       )
@@ -82,15 +75,17 @@ class App extends React.Component {
     return (
       <Switch>
         <Route exact path="/" component={() => <div>index</div>} />
-        {this.renderRoutes()}
+        <Route
+          exact
+          path="/:collection"
+          component={(props) => <Collection key={props.match.params.collection} name={props.match.params.collection} />}
+        />
+        <Route
+          path="/:collection/:id"
+          component={(props) => <Item collection={props.match.params.collection} id={encodeURI(props.match.params.id)} />}
+        />
       </Switch>
     )
-  }
-
-  renderRoutes() {
-    return App.routes.map(route => (
-      <Route key={route.path} path={route.path} component={route.component} />
-    ))
   }
 }
 
@@ -99,7 +94,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout)
+  logout: () => dispatch(logout())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

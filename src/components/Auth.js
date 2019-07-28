@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
-import firebaseui from 'firebaseui'
+import { auth } from 'firebaseui'
 
 import { authInit } from 'store/user'
 
@@ -20,7 +20,7 @@ class Auth extends React.Component {
     }
 
     if (this.props.user && this.props.user.isAnonymous) {
-      const ui = new firebaseui.auth.AuthUI(firebase.auth())
+      const ui = new auth.AuthUI(firebase.auth())
 
       ui.start('#firebaseui-auth-container', {
         signInOptions: [
@@ -46,7 +46,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  authInit: () => dispatch(authInit)
+  authInit: () => dispatch(authInit())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth)
