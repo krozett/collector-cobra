@@ -1,11 +1,22 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { List, ListItem, TextField, Button, FontIcon } from 'react-md'
+import {
+  List,
+  ListItem,
+  TextField,
+  Button,
+  FontIcon,
+  DataTable,
+  TableBody,
+  TableRow,
+  TableColumn,
+  TablePagination
+} from 'react-md'
 
 import types from 'types'
 import { loadCollection, createItem } from 'store/collections'
-import { fetchResults } from 'store/search'
+import { clearSearch, fetchSearchResults } from 'store/search'
 import keysToFields from 'helpers/keysToFields'
 
 class Collection extends React.Component {
@@ -13,12 +24,14 @@ class Collection extends React.Component {
     super()
 
     this.state = {
-      query: ''
+      query: '',
+      page: 1
     }
   }
 
   componentDidMount() {
     this.props.loadCollection(this.props.name)
+    this.props.clearSearch(this.props.name)
   }
 
   render() {
@@ -72,7 +85,7 @@ class Collection extends React.Component {
           onChange={this.changeQuery}
         />
 
-        <Button raised onClick={this.search}>
+        <Button raised onClick={this.newSearch}>
           Search
         </Button>
 
@@ -82,11 +95,15 @@ class Collection extends React.Component {
   }
 
   renderSearchResults() {
-    if (!this.props.search.results) {
+    const type = types[this.props.name]
+    const results = this.props.search.results
+    const total = this.props.search.total
+
+    if (!results || !total) {
       return null
     }
 
-    else if (this.props.search.results.length < 1) {
+    else if (results.length < 1) {
       return (
         <List>
           <ListItem primaryText="No results found." />
@@ -94,7 +111,7 @@ class Collection extends React.Component {
       )
     }
 
-    const listItems = this.props.search.results.map((result) => {
+    const rows = results.map((result) => {
       const addIcon = (
         <FontIcon onClick={this.addResultGenerator(result.id)}>
           add
@@ -110,19 +127,33 @@ class Collection extends React.Component {
       )
 
       return (
-        <ListItem
-          key={result.id}
-          primaryText={result.display}
-          leftIcon={addIcon}
-          rightIcon={link}
-        />
+        <TableRow key={result.id} selectable={false}>
+          <TableColumn>
+            {addIcon}
+          </TableColumn>
+          <TableColumn>
+            {result.display}
+          </TableColumn>
+          <TableColumn>
+            {link}
+          </TableColumn>
+        </TableRow>
       )
     })
 
     return (
-      <List>
-        {listItems}
-      </List>
+      <DataTable baseId="search-results">
+        <TableBody>
+          {rows}
+        </TableBody>
+        <TablePagination
+          rows={total}
+          page={this.state.page}
+          defaultRowsPerPage={type.searchResultsPerPage}
+          rowsPerPageLabel=""
+          onPagination={this.paginate}
+        />
+      </DataTable>
     )
   }
 
@@ -132,8 +163,22 @@ class Collection extends React.Component {
     })
   }
 
-  search = () => {
-    this.props.fetchResults(this.props.name, this.state.query)
+  search = page => {
+    this.props.fetchSearchResults(this.props.name, this.state.query, page)
+  }
+
+  newSearch = () => {
+    this.search(1)
+    this.setState({
+      page: 1
+    })
+  }
+
+  paginate = (newStart, rowsPerPage, currentPage) => {
+    this.search(currentPage)
+    this.setState({
+      page: currentPage
+    })
   }
 
   addResultGenerator = id => () => {
@@ -148,8 +193,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadCollection: collection => dispatch(loadCollection(collection)),
-  fetchResults: (collection, query) => dispatch(
-    fetchResults(collection, query)
+  clearSearch: () => dispatch(clearSearch()),
+  fetchSearchResults: (collection, query, page) => dispatch(
+    fetchSearchResults(collection, query, page)
   ),
   createItem: (collection, id) => dispatch(createItem(collection, id))
 })

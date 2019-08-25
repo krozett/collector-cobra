@@ -8,15 +8,20 @@ const tv = {
   label: 'TV',
   icon: 'tv',
   searchLabel: 'Series Name',
-  searchURI: query => (
+  searchResultsPerPage: 20,
+  searchURI: (query, page) => (
     'https://api.themoviedb.org/3/search/tv?api_key=' + config.tmdbKey +
-    '&language=en-US&query=' + encodeURI(query)
+    '&language=en-US&query=' + encodeURI(query) +
+    (page ? ('&page=' + page) : '')
   ),
-  searchTransform: json => json.results.map(result => ({
-    id: result.id,
-    display: result.name + ' (' + result.first_air_date + ')',
-    uri: 'https://www.themoviedb.org/tv/' + result.id
-  })),
+  searchTransform: json => [
+    json.results.map(result => ({
+      id: result.id,
+      display: result.name + ' (' + result.first_air_date + ')',
+      uri: 'https://www.themoviedb.org/tv/' + result.id
+    })),
+    json.total_results
+  ],
   fetchURI: id => (
     'https://api.themoviedb.org/3/tv/' + id + '?api_key=' +
     config.tmdbKey + '&language=en-US'

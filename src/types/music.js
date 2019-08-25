@@ -8,16 +8,21 @@ const music = {
   label: 'Music',
   icon: 'music_note',
   searchLabel: 'Album Title',
-  searchURI: query => (
+  searchResultsPerPage: 50,
+  searchURI: (query, page) => (
     'https://api.discogs.com/database/search?type=release&title=' +
     encodeURI(query) + '&key=' + config.discogsKey + '&secret=' +
-    config.discogsSecret
+    config.discogsSecret + (page ? ('&page=' + page) : '')
   ),
-  searchTransform: json => json.results.map(result => ({
-    id: result.id,
-    display: result.title + ' (' + result.country + ', ' + result.year + ')',
-    uri: 'https://www.discogs.com' + result.uri
-  })),
+  searchTransform: json => [
+    json.results.map(result => ({
+      id: result.id,
+      display: result.title + ' (' + result.country + ', ' + result.year +
+        ', ' + result.format.join(', ') + ')',
+      uri: 'https://www.discogs.com' + result.uri
+    })),
+    json.pagination.items
+  ],
   fetchURI: id => 'https://api.discogs.com/releases/' + id,
   fetchTransform: json => ({
     discogsID: parseInt(json.id, 10),

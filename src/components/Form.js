@@ -125,6 +125,7 @@ class Form extends React.Component {
 
   renderTextField(field) {
     let changeFunction = this.changeField
+
     if (field.type === 'number') {
       changeFunction = this.changeNumber
     }

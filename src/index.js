@@ -12,6 +12,7 @@ import 'index.css'
 import 'react-md/dist/react-md.green-deep_orange.min.css'
 
 firebase.initializeApp(config.firebase)
+window.fb = firebase
 
 const provider = (
   <Provider store={store}>

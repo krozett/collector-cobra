@@ -8,15 +8,20 @@ const movies = {
   label: 'Movies',
   icon: 'movie',
   searchLabel: 'Movie Title',
-  searchURI: query => (
+  searchResultsPerPage: 20,
+  searchURI: (query, page) => (
     'https://api.themoviedb.org/3/search/movie?api_key=' + config.tmdbKey +
-    '&language=en-US&include_adult=true&query=' + encodeURI(query)
+    '&language=en-US&include_adult=true&query=' + encodeURI(query) +
+    (page ? ('&page=' + page) : '')
   ),
-  searchTransform: json => json.results.map(result => ({
-    id: result.id,
-    display: result.title + ' (' + result.release_date + ')',
-    uri: 'https://www.themoviedb.org/movie/' + result.id
-  })),
+  searchTransform: json => [
+    json.results.map(result => ({
+      id: result.id,
+      display: result.title + ' (' + result.release_date + ')',
+      uri: 'https://www.themoviedb.org/movie/' + result.id
+    })),
+    json.total_results
+  ],
   fetchURI: id => (
     'https://api.themoviedb.org/3/movie/' + id + '?api_key=' +
     config.tmdbKey + '&language=en-US'

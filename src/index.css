@@ -15,3 +15,7 @@ code {
 .md-inline-block.md-avatar {
   vertical-align: middle;
 }
+
+#search-results-pagination-menu {
+  display: none;
+}
