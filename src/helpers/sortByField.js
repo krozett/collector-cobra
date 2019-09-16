@@ -1,12 +1,9 @@
-const keysToFields = (object, sortField) => {
-  let keys = Object.keys(object).map((key) => {
-    const decoded = decodeURI(key)
-    return [key].concat(decoded.split('\x7F'))
-  })
+const sortByField = (object, sortField) => {
+  let keys = Object.keys(object)
 
   keys.sort((a, b) => {
-    let aTitle = cleanFront(a[sortField])
-    let bTitle = cleanFront(b[sortField])
+    let aTitle = cleanFront(object[a][sortField])
+    let bTitle = cleanFront(object[b][sortField])
     let comp = aTitle.localeCompare(bTitle)
 
     if (comp > 0) {
@@ -35,4 +32,4 @@ const cleanFront = (str) => {
   return str.length > 0 ? str : original
 }
 
-export default keysToFields
+export default sortByField

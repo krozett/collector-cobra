@@ -6,8 +6,10 @@ import { auth } from 'firebaseui'
 import { authInit } from 'store/user'
 
 class Auth extends React.Component {
-  componentWillMount() {
-    this.props.authInit()
+  constructor(props) {
+    super(props)
+
+    props.authInit()
   }
 
   render() {

@@ -35,15 +35,13 @@ const music = {
     links: [],
     notes: null
   }),
-  idFormat: {
-    fields: [
-      'artist',
-      'title',
-      item => timestampToDate(item.released).getUTCFullYear()
-    ],
-    sortBy: 2,
-    primaryText: 2,
-    secondaryText: id => id[1] + ' (' + id[3] + ')'
+  generateIndexEntry: (item) => {
+    const year = timestampToDate(item.released).getUTCFullYear()
+
+    return {
+      primaryText: item.title,
+      secondaryText: item.artist + ' (' + year + ')'
+    }
   },
   fields: [{
     id: 'discogsID',

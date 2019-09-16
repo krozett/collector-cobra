@@ -38,6 +38,7 @@ const movies = {
   ),
   fetchTransform: (json) => {
     let isbn = null
+
     const isbn10 = (json.volumeInfo.industryIdentifiers || []).find(id => (
       id.type === 'ISBN_10'
     ))
@@ -66,15 +67,13 @@ const movies = {
       notes: null
     }
   },
-  idFormat: {
-    fields: [
-      'author',
-      'title',
-      item => timestampToDate(item.published).getUTCFullYear()
-    ],
-    sortBy: 2,
-    primaryText: 2,
-    secondaryText: id => id[1] + ' (' + id[3] + ')'
+  generateIndexEntry: (item) => {
+    const year = timestampToDate(item.published).getUTCFullYear()
+
+    return {
+      primaryText: item.title,
+      secondaryText: item.author + ' (' + year + ')'
+    }
   },
   fields: [{
     id: 'googleBooksID',

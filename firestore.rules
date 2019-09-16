@@ -1,7 +1,26 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth.uid == "WOB2mSgigDQZYTwL7MtrHfzY4vy1";
+    match /users/{uid} {
+      // Let users create their home document to request an account
+      allow create: if request.auth.uid == uid;
+
+      // System lists cannot be created or deleted,
+      // and system flag cannot be changed
+      match /lists/{list} {
+        allow read: if request.auth.uid == uid;
+        allow create: if request.auth.uid == uid &&
+          !request.resource.data.system;
+        allow delete: if request.auth.uid == uid &&
+          !resource.data.system;
+        allow update: if request.auth.uid == uid &&
+          resource.data.system == request.resource.data.system;
+      }
+
+      // Give users full control over their other documents
+      match /{collection}/{path=**} {
+        allow read, write: if request.auth.uid == uid &&
+          collection != 'lists';
+      }
     }
   }
 }

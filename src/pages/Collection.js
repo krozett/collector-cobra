@@ -17,7 +17,7 @@ import {
 import types from 'types'
 import { loadCollection, createItem } from 'store/collections'
 import { clearSearch, fetchSearchResults } from 'store/search'
-import keysToFields from 'helpers/keysToFields'
+import sortByField from 'helpers/sortByField'
 
 class Collection extends React.Component {
   constructor() {
@@ -30,45 +30,24 @@ class Collection extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadCollection(this.props.name)
+    this.props.loadCollection(this.props.user.uid, this.props.name)
     this.props.clearSearch(this.props.name)
   }
 
   render() {
-    const items = this.props.collections[this.props.name]
-
-    if (!items) {
-      return null
-    }
-
+    const items = this.props.collections[this.props.name] || {}
     const type = types[this.props.name]
-    const splitKeys = keysToFields(items, type.idFormat.sortBy)
 
-    const listItems = splitKeys.map((id) => {
-      let primaryText
-      let secondaryText
-
-      if (typeof type.idFormat.primaryText === 'function') {
-        primaryText = type.idFormat.primaryText(id)
-      }
-      else {
-        primaryText = id[type.idFormat.primaryText]
-      }
-
-      if (typeof type.idFormat.secondaryText === 'function') {
-        secondaryText = type.idFormat.secondaryText(id)
-      }
-      else {
-        secondaryText = id[type.idFormat.secondaryText]
-      }
+    const listItems = sortByField(items, 'primaryText').map((key) => {
+      const item = items[key]
 
       return (
         <ListItem
-          key={id[0]}
+          key={key}
           component={Link}
-          to={'/' + this.props.name + '/' + id[0]}
-          primaryText={primaryText}
-          secondaryText={secondaryText}
+          to={'/' + this.props.name + '/' + key}
+          primaryText={item.primaryText || ''}
+          secondaryText={item.secondaryText}
         />
       )
     })
@@ -182,22 +161,27 @@ class Collection extends React.Component {
   }
 
   addResultGenerator = id => () => {
-    this.props.createItem(this.props.name, id)
+    this.props.createItem(this.props.user.uid, this.props.name, id)
   }
 }
 
 const mapStateToProps = state => ({
   collections: state.collections,
-  search: state.search
+  search: state.search,
+  user: state.user
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadCollection: collection => dispatch(loadCollection(collection)),
+  loadCollection: (userID, collection) => dispatch(
+    loadCollection(userID, collection)
+  ),
   clearSearch: () => dispatch(clearSearch()),
   fetchSearchResults: (collection, query, page) => dispatch(
     fetchSearchResults(collection, query, page)
   ),
-  createItem: (collection, id) => dispatch(createItem(collection, id))
+  createItem: (userID, collection, id) => dispatch(
+    createItem(userID, collection, id)
+  )
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Collection)

@@ -52,15 +52,10 @@ const tv = {
       notes: null
     }
   },
-  idFormat: {
-    fields: [
-      'title',
-      item => timestampToDate(item.released).getUTCFullYear()
-    ],
-    sortBy: 1,
-    primaryText: 1,
-    secondaryText: 2
-  },
+  generateIndexEntry: item => ({
+    primaryText: item.title,
+    secondaryText: timestampToDate(item.released).getUTCFullYear()
+  }),
   fields: [{
     id: 'tmdbID',
     type: 'readOnly',

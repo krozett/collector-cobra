@@ -1,14 +1,12 @@
 import firebase from 'firebase'
 
 import types from 'types'
-import generateID from 'helpers/generateID'
 
 const SET_COLLECTION = 'SET_COLLECTION'
 const SET_ITEM = 'SET_ITEM'
 
-export const setCollection = (name, collection) => ({
+export const setCollection = collection => ({
   type: SET_COLLECTION,
-  name,
   collection
 })
 
@@ -24,12 +22,33 @@ export const collections = (state = {}, action) => {
 
   switch (action.type) {
     case SET_COLLECTION:
-      newState[action.name] = action.collection
+      Object.keys(action.collection.entries).forEach((id) => {
+        const entry = action.collection.entries[id]
+
+        if (!newState.hasOwnProperty(entry.type)) {
+          newState[entry.type] = {}
+        }
+
+        newState[entry.type][id] = {
+          primaryText: entry.primaryText,
+          secondaryText: entry.secondaryText,
+          loaded: false
+        }
+      })
+
       return newState
 
     case SET_ITEM:
-      newState[action.name] = newState[action.name] || {}
-      newState[action.name][action.id] = action.item
+      if (!newState.hasOwnProperty(action.name)) {
+        newState[action.name] = {}
+      }
+
+      newState[action.name][action.id] = {
+        ...newState[action.name][action.id],
+        ...action.item,
+        loaded: true
+      }
+
       return newState
 
     default:
@@ -37,54 +56,55 @@ export const collections = (state = {}, action) => {
   }
 }
 
-export const loadCollection = name => async (dispatch, state) => {
-  const db = firebase.firestore()
-  const snapshot = await db.collection(name).get()
-  let docs = {}
-
-  snapshot.forEach((doc) => {
-    docs[doc.id] = null
-  })
-
-  dispatch(setCollection(name, docs))
+export const loadCollection = (userID, name) => async (dispatch, state) => {
+  // The collection index is really just a special list document
+  dispatch(loadItem(userID, 'lists', 'index-' + name + '-1'))
 }
 
-export const loadItem = (name, id) => async (dispatch, state) => {
-  const db = firebase.firestore()
-  const doc = await db.collection(name).doc(id).get()
+export const loadItem = (userID, name, id) => async (dispatch, state) => {
+  let doc
+  let msg
 
-  if (!doc.exists) {
+  try {
+    const db = firebase.firestore()
+    const collection = db.collection('users').doc(userID).collection(name)
+    doc = await collection.doc(id).get()
+  }
+  catch (err) {
+    msg = err.toString()
+  }
+
+  if (msg) {
+    window.alert(msg)
+  }
+  else if (!doc.exists) {
     window.alert('Item not found!')
   }
-
+  else if (id.startsWith('index-')) {
+    dispatch(setCollection(doc.data()))
+  }
   else {
-    let data = doc.data()
-    dispatch(setItem(name, id, data))
+    dispatch(setItem(name, id, doc.data()))
   }
 }
 
-export const saveItem = (name, id, item) => async (dispatch, state) => {
+export const saveItem = (userID, name, id, item) => async (dispatch, state) => {
+  const type = types[name]
   const db = firebase.firestore()
-  const docRef = db.collection(name).doc(id)
-  const newID = generateID(types[name], item)
+  const userDoc = db.collection('users').doc(userID)
+  const itemRef = userDoc.collection(name).doc(id)
+  const indexRef = userDoc.collection('lists').doc('index-' + name + '-1')
 
-  if (newID !== id) {
-    const oldData = await (await docRef.get()).data()
-    await db.collection(name).doc(newID).set({
-      ...oldData,
-      ...item
-    })
-    await docRef.delete()
-  }
+  let entries = {}
+  entries[id] = type.generateIndexEntry(item)
 
-  else {
-    await docRef.set(item, { merge: true })
-  }
+  await itemRef.set(item, { merge: true })
+  await indexRef.set({ entries }, { merge: true })
 
   dispatch(setItem(name, id, { redirect: '/' + name }))
 }
 
-export const createItem = (name, apiID) => async (dispatch, state) => {
+export const createItem = (userID, name, apiID) => async (dispatch, state) => {
   const type = types[name]
   const url = type.fetchURI(apiID)
   const response = await fetch(url)
@@ -95,11 +115,25 @@ export const createItem = (name, apiID) => async (dispatch, state) => {
 
   else {
     const db = firebase.firestore()
+    const userDoc = db.collection('users').doc(userID)
+    const indexRef = userDoc.collection('lists').doc('index-' + name + '-1')
     const json = await response.json()
     const item = type.fetchTransform(json)
-    const id = generateID(type, item)
 
-    db.collection(name).doc(id).set(item)
-    dispatch(setItem(name, id, null))
+    const indexEntry = type.generateIndexEntry(item)
+    const itemRef = await userDoc.collection(name).add(item)
+
+    let entries = {}
+    entries[itemRef.id] = {
+      ...indexEntry,
+      type: name
+    }
+
+    await indexRef.set({ entries }, { merge: true })
+
+    dispatch(setItem(name, itemRef.id, {
+      ...item,
+      ...indexEntry
+    }))
   }
 }

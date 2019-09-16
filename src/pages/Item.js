@@ -8,14 +8,15 @@ import Form from 'components/Form'
 
 class Item extends React.Component {
   componentDidMount() {
-    this.props.loadItem(this.props.collection, this.props.id)
+    const userID = this.props.user.uid
+    this.props.loadItem(userID, this.props.collection, this.props.id)
   }
 
   render() {
     const collection = this.props.collections[this.props.collection]
     const item = collection && collection[this.props.id]
 
-    if (!item) {
+    if (!item || !item.loaded) {
       return null
     }
     else if (item.redirect) {
@@ -40,18 +41,22 @@ class Item extends React.Component {
   }
 
   submit = (formData) => {
-    this.props.saveItem(this.props.collection, this.props.id, formData)
+    const userID = this.props.user.uid
+    this.props.saveItem(userID, this.props.collection, this.props.id, formData)
   }
 }
 
 const mapStateToProps = state => ({
-  collections: state.collections
+  collections: state.collections,
+  user: state.user
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadItem: (collection, id) => dispatch(loadItem(collection, id)),
-  saveItem: (collection, id, item) => dispatch(
-    saveItem(collection, id, item)
+  loadItem: (userID, collection, id) => dispatch(
+    loadItem(userID, collection, id)
+  ),
+  saveItem: (userID, collection, id, item) => dispatch(
+    saveItem(userID, collection, id, item)
   )
 })
 

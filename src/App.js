@@ -11,6 +11,20 @@ import Auth from 'components/Auth'
 
 // icon: collections
 
+const CollectionRouteComponent = props => (
+  <Collection
+    key={props.match.params.collection}
+    name={props.match.params.collection}
+  />
+)
+
+const ItemRouteComponent = props => (
+  <Item
+    collection={props.match.params.collection}
+    id={encodeURI(props.match.params.id)}
+  />
+)
+
 class App extends React.Component {
   render() {
     return (
@@ -78,11 +92,11 @@ class App extends React.Component {
         <Route
           exact
           path="/:collection"
-          component={(props) => <Collection key={props.match.params.collection} name={props.match.params.collection} />}
+          component={CollectionRouteComponent}
         />
         <Route
           path="/:collection/:id"
-          component={(props) => <Item collection={props.match.params.collection} id={encodeURI(props.match.params.id)} />}
+          component={ItemRouteComponent}
         />
       </Switch>
     )

@@ -163,7 +163,7 @@ class Form extends React.Component {
       }]
     }
 
-    const rows = this.state[field.id].map((row, i) => {
+    const rows = (this.state[field.id] || []).map((row, i) => {
       const key = Object.values(row).join('-') || i
       const fields = subfields.map(subfield => this.renderField({
         ...subfield,
