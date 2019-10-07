@@ -53,11 +53,14 @@ class Form extends React.Component {
       <div>
         {fields}
 
+        <Button raised component={Link} to={this.props.returnURL}>
+          Cancel
+        </Button>
         <Button raised onClick={this.submit}>
           Save
         </Button>
-        <Button raised component={Link} to={this.props.returnURL}>
-          Cancel
+        <Button raised onClick={this.confirmDelete}>
+          Delete
         </Button>
 
         {this.renderExternalLinks()}
@@ -323,6 +326,12 @@ class Form extends React.Component {
   submit = () => {
     this.props.onSubmit(this.state)
   }
+
+  confirmDelete = () => {
+    if (window.confirm('Are you sure you want to delete this item?')) {
+      this.props.onDelete()
+    }
+  }
 }
 
 Form.propTypes = {
@@ -343,7 +352,8 @@ Form.propTypes = {
     }))
   })).isRequired,
   returnURL: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
 }
 
 export default Form

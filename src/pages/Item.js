@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 import types from 'types'
-import { loadItem, saveItem } from 'store/collections'
+import { loadItem, saveItem, deleteItem } from 'store/collections'
 import Form from 'components/Form'
 
 class Item extends React.Component {
@@ -36,6 +36,7 @@ class Item extends React.Component {
         fields={fields}
         returnURL={'/' + this.props.collection}
         onSubmit={this.submit}
+        onDelete={this.deleteAfterConfirm}
       />
     )
   }
@@ -43,6 +44,11 @@ class Item extends React.Component {
   submit = (formData) => {
     const userID = this.props.user.uid
     this.props.saveItem(userID, this.props.collection, this.props.id, formData)
+  }
+
+  deleteAfterConfirm = () => {
+    const userID = this.props.user.uid
+    this.props.deleteItem(userID, this.props.collection, this.props.id)
   }
 }
 
@@ -57,6 +63,9 @@ const mapDispatchToProps = dispatch => ({
   ),
   saveItem: (userID, collection, id, item) => dispatch(
     saveItem(userID, collection, id, item)
+  ),
+  deleteItem: (userID, collection, id) => dispatch(
+    deleteItem(userID, collection, id)
   )
 })
 

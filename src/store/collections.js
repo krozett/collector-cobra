@@ -137,3 +137,19 @@ export const createItem = (userID, name, apiID) => async (dispatch, state) => {
     window.alert(err)
   }
 }
+
+export const deleteItem = (userID, name, id) => async (dispatch, state) => {
+  const db = firebase.firestore()
+  const userDoc = db.collection('users').doc(userID)
+  const itemRef = userDoc.collection(name).doc(id)
+  const indexRef = userDoc.collection('lists').doc('index-' + name + '-1')
+
+  const indexDoc = await indexRef.get()
+  let indexData = indexDoc.data()
+  delete indexData.entries[id]
+
+  await itemRef.delete()
+  await indexRef.set(indexData)
+
+  dispatch(setItem(name, id, { deleted: true, redirect: '/' + name }))
+}

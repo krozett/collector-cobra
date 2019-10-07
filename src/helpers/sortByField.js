@@ -1,5 +1,5 @@
 const sortByField = (object, sortField) => {
-  let keys = Object.keys(object)
+  let keys = Object.keys(object).filter(key => !object[key].deleted)
 
   keys.sort((a, b) => {
     let aTitle = cleanFront(object[a][sortField])
