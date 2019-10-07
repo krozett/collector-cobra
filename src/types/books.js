@@ -8,10 +8,6 @@ const movies = {
   icon: 'book',
   searchLabel: 'Book Title',
   searchResultsPerPage: 20,
-  searchURI: (query, page) => (
-    'https://www.googleapis.com/books/v1/volumes?maxResults=20&q='
-     + encodeURI(query) + (page ? ('&startIndex=' + (page - 1) * 20) : '')
-  ),
   searchTransform: json => [
     json.items.map((item) => {
       const author = (item.volumeInfo.authors || []).join(' & ')
@@ -33,9 +29,6 @@ const movies = {
     }),
     json.totalItems
   ],
-  fetchURI: id => (
-    'https://www.googleapis.com/books/v1/volumes/' + id
-  ),
   fetchTransform: (json) => {
     let isbn = null
 

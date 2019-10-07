@@ -1,6 +1,5 @@
 import firebase from 'firebase'
 
-import config from 'config'
 import parseDateUTC from 'helpers/parseDateUTC'
 import timestampToDate from 'helpers/timestampToDate'
 
@@ -9,11 +8,6 @@ const music = {
   icon: 'music_note',
   searchLabel: 'Album Title',
   searchResultsPerPage: 50,
-  searchURI: (query, page) => (
-    'https://api.discogs.com/database/search?type=release&title=' +
-    encodeURI(query) + '&key=' + config.discogsKey + '&secret=' +
-    config.discogsSecret + (page ? ('&page=' + page) : '')
-  ),
   searchTransform: json => [
     json.results.map(result => ({
       id: result.id,
@@ -23,7 +17,6 @@ const music = {
     })),
     json.pagination.items
   ],
-  fetchURI: id => 'https://api.discogs.com/releases/' + id,
   fetchTransform: json => ({
     discogsID: parseInt(json.id, 10),
     title: json.title,

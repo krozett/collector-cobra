@@ -106,19 +106,15 @@ export const saveItem = (userID, name, id, item) => async (dispatch, state) => {
 
 export const createItem = (userID, name, apiID) => async (dispatch, state) => {
   const type = types[name]
-  const url = type.fetchURI(apiID)
-  const response = await fetch(url)
+  const apiFetch = firebase.functions().httpsCallable('apiFetch')
 
-  if (!response.ok) {
-    window.alert(await response.text())
-  }
+  try {
+    const response = await apiFetch({ type: name, id: apiID })
+    const item = type.fetchTransform(response.data)
 
-  else {
     const db = firebase.firestore()
     const userDoc = db.collection('users').doc(userID)
     const indexRef = userDoc.collection('lists').doc('index-' + name + '-1')
-    const json = await response.json()
-    const item = type.fetchTransform(json)
 
     const indexEntry = type.generateIndexEntry(item)
     const itemRef = await userDoc.collection(name).add(item)
@@ -135,5 +131,9 @@ export const createItem = (userID, name, apiID) => async (dispatch, state) => {
       ...item,
       ...indexEntry
     }))
+  }
+
+  catch (err) {
+    window.alert(err)
   }
 }

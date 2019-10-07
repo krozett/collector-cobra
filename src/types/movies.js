@@ -1,6 +1,5 @@
 import firebase from 'firebase'
 
-import config from 'config'
 import parseDateUTC from 'helpers/parseDateUTC'
 import timestampToDate from 'helpers/timestampToDate'
 
@@ -9,11 +8,6 @@ const movies = {
   icon: 'movie',
   searchLabel: 'Movie Title',
   searchResultsPerPage: 20,
-  searchURI: (query, page) => (
-    'https://api.themoviedb.org/3/search/movie?api_key=' + config.tmdbKey +
-    '&language=en-US&include_adult=true&query=' + encodeURI(query) +
-    (page ? ('&page=' + page) : '')
-  ),
   searchTransform: json => [
     json.results.map(result => ({
       id: result.id,
@@ -22,10 +16,6 @@ const movies = {
     })),
     json.total_results
   ],
-  fetchURI: id => (
-    'https://api.themoviedb.org/3/movie/' + id + '?api_key=' +
-    config.tmdbKey + '&language=en-US'
-  ),
   fetchTransform: json => ({
     tmdbID: parseInt(json.id, 10),
     title: json.title,

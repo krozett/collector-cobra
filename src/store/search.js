@@ -1,3 +1,5 @@
+import firebase from 'firebase'
+
 import types from 'types'
 
 const CLEAR_SEARCH = 'CLEAR_SEARCH'
@@ -41,19 +43,17 @@ export const search = (state = {}, action) => {
 }
 
 export const fetchSearchResults = (name, query, page) => async (dispatch, state) => {
-  const type = types[name]
-  const url = type.searchURI(query, page)
-  const response = await fetch(url)
+  const apiSearch = firebase.functions().httpsCallable('apiSearch')
 
-  if (!response.ok) {
-    window.alert(await response.text())
-  }
-
-  else {
-    const json = await response.json()
-    const [results, total] = type.searchTransform(json)
+  try {
+    const response = await apiSearch({ type: name, query, page })
+    const [results, total] = types[name].searchTransform(response.data)
 
     dispatch(setSearchResults(results))
     dispatch(setSearchTotal(total))
+  }
+
+  catch (err) {
+    window.alert(err)
   }
 }
