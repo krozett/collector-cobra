@@ -10,12 +10,19 @@ const gameFields = [
   'site_detail_url'
 ]
 
+const comicFields = [
+  'name',
+  'start_year',
+  'site_detail_url'
+]
+
 const apiSearch = async (data) => {
   const apiKeys = functions.config().api
 
   let base
   let params = {}
   let page = data.page || 1
+  let msg
 
   switch (data.type) {
     case 'books':
@@ -24,6 +31,17 @@ const apiSearch = async (data) => {
         q: data.query,
         maxResults: 20,
         startIndex: (page - 1) * 20
+      }
+      break
+
+    case 'comics':
+      base = 'https://comicvine.gamespot.com/api/volumes/'
+      params = {
+        api_key: apiKeys.comicvine.key,
+        format: 'json',
+        field_list: comicFields.join(','),
+        filter: 'name:' + data.query,
+        offset: (page - 1) * 100
       }
       break
 
@@ -71,7 +89,7 @@ const apiSearch = async (data) => {
       break
 
     default:
-      const msg = 'Invalid collection type'
+      msg = 'Invalid collection type'
       throw new functions.https.HttpsError('invalid-argument', msg)
   }
 

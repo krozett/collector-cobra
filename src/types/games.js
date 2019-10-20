@@ -53,10 +53,11 @@ const games = {
   }),
   fields: [{
     id: 'giantBombGUID',
-    type: 'readOnly',
+    type: 'text',
     label: 'Giant Bomb GUID',
-    linkTitle: 'Giant Bomb',
-    linkURI: id => 'https://www.giantbomb.com/game/' + id
+    icon: 'folder_open',
+    apiTitle: 'Giant Bomb',
+    apiURI: id => 'https://www.giantbomb.com/game/' + id
   }, {
     id: 'title',
     type: 'text',

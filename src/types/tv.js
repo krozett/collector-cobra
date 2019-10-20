@@ -48,10 +48,11 @@ const tv = {
   }),
   fields: [{
     id: 'tmdbID',
-    type: 'readOnly',
+    type: 'number',
     label: 'The Movie Database ID',
-    linkTitle: 'The Movie Database',
-    linkURI: id => 'https://www.themoviedb.org/tv/' + id
+    icon: 'folder_open',
+    apiTitle: 'The Movie Database',
+    apiURI: id => 'https://www.themoviedb.org/tv/' + id
   }, {
     id: 'title',
     type: 'text',

@@ -13,15 +13,33 @@ const gameFields = [
   'releases'
 ]
 
+const comicFields = [
+  'name',
+  'start_year',
+  'publisher',
+  'count_of_issues',
+  'site_detail_url'
+]
+
 const apiFetch = async (data) => {
   const apiKeys = functions.config().api
 
   let base
   let params = {}
+  let msg
 
   switch (data.type) {
     case 'books':
       base = 'https://www.googleapis.com/books/v1/volumes/' + data.id
+      break
+
+    case 'comics':
+      base = 'https://comicvine.gamespot.com/api/volume/' + data.id + '/'
+      params = {
+        api_key: apiKeys.comicvine.key,
+        format: 'json',
+        field_list: comicFields.join(',')
+      }
       break
 
     case 'games':
@@ -54,7 +72,7 @@ const apiFetch = async (data) => {
       break
 
     default:
-      const msg = 'Invalid collection type'
+      msg = 'Invalid collection type'
       throw new functions.https.HttpsError('invalid-argument', msg)
   }
 

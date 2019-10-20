@@ -70,10 +70,11 @@ const movies = {
   },
   fields: [{
     id: 'googleBooksID',
-    type: 'readOnly',
+    type: 'text',
     label: 'Google Books ID',
-    linkTitle: 'Google Books',
-    linkURI: id => 'https://books.google.com/books?id=' + id
+    icon: 'folder_open',
+    apiTitle: 'Google Books',
+    apiURI: id => 'https://books.google.com/books?id=' + id
   }, {
     id: 'title',
     type: 'text',

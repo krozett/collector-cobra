@@ -70,8 +70,6 @@ class Form extends React.Component {
 
   renderField(field) {
     switch (field.type) {
-      case 'readOnly':
-        return this.renderReadOnly(field)
       case 'date':
         return this.renderDatePicker(field)
       case 'boolean':
@@ -81,15 +79,6 @@ class Form extends React.Component {
       default:
         return this.renderTextField(field)
     }
-  }
-
-  renderReadOnly(field) {
-    return (
-      <dl key={field.id}>
-        <dt>{field.label}</dt>
-        <dd>{field.value}</dd>
-      </dl>
-    )
   }
 
   renderDatePicker(field) {
@@ -143,6 +132,7 @@ class Form extends React.Component {
         leftIcon={this.renderIcon(field.icon)}
         fullWidth={!field.inline}
         defaultValue={field.value}
+        disabled={field.apiURI ? true : false}
         onChange={changeFunction}
       />
     )
@@ -225,9 +215,9 @@ class Form extends React.Component {
     this.props.fields.forEach((field) => {
       const val = this.state[field.id]
 
-      if (field.linkURI && val) {
-        const url = field.linkURI(val)
-        buttons.push(this.renderButton(field.linkTitle, url))
+      if (field.apiURI && val) {
+        const url = field.apiURI(val)
+        buttons.push(this.renderButton(field.apiTitle, url))
       }
 
       else if (field.links) {
@@ -276,7 +266,14 @@ class Form extends React.Component {
   }
 
   changeNumber = (val, event) => {
-    this.changeField(parseFloat(val, 10), event)
+    const numericVal = parseFloat(val, 10)
+
+    if (isNaN(numericVal)) {
+      this.changeField(null, event)
+    }
+    else {
+      this.changeField(numericVal, event)
+    }
   }
 
   changeDateGenerator = id => (dateString, dateObject) => {
@@ -341,8 +338,8 @@ Form.propTypes = {
     label: PropTypes.string.isRequired,
     icon: PropTypes.string,
     value: PropTypes.any,
-    linkTitle: PropTypes.string,
-    linkURI: PropTypes.func,
+    apiTitle: PropTypes.string,
+    apiURI: PropTypes.func,
     links: PropTypes.bool,
     subfields: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,

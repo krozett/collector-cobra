@@ -38,10 +38,11 @@ const music = {
   },
   fields: [{
     id: 'discogsID',
-    type: 'readOnly',
+    type: 'number',
     label: 'Discogs ID',
-    linkTitle: 'Discogs',
-    linkURI: id => 'https://www.discogs.com/release/' + id
+    icon: 'folder_open',
+    apiTitle: 'Discogs',
+    apiURI: id => 'https://www.discogs.com/release/' + id
   }, {
     id: 'title',
     type: 'text',
