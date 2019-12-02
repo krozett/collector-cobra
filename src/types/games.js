@@ -21,6 +21,7 @@ const games = {
     const year = json.results.expected_release_year
     const month = json.results.expected_release_month
     const day = json.results.expected_release_day
+    let dateObj = new Date()
     let released
 
     // Original release date is preferable
@@ -30,7 +31,12 @@ const games = {
 
     // But if needed, we can construct it from the 'expected' bits
     else if (year && month && day) {
-      const dateObj = new Date(year, month - 1, day)
+      dateObj = new Date(year, month - 1, day)
+      released = parseDateUTC(dateObj)
+    }
+
+    else if (year) {
+      dateObj = new Date(year, 0, 1)
       released = parseDateUTC(dateObj)
     }
 
