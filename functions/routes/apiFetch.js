@@ -31,6 +31,9 @@ const apiFetch = async (data) => {
   switch (data.type) {
     case 'books':
       base = 'https://www.googleapis.com/books/v1/volumes/' + data.id
+      params = {
+        country: 'US'
+      }
       break
 
     case 'comics':

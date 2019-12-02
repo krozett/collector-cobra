@@ -29,6 +29,7 @@ const apiSearch = async (data) => {
       base = 'https://www.googleapis.com/books/v1/volumes'
       params = {
         q: data.query,
+        country: 'US',
         maxResults: 20,
         startIndex: (page - 1) * 20
       }
