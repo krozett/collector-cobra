@@ -51,7 +51,7 @@ const movies = {
       title: json.volumeInfo.title,
       author: (json.volumeInfo.authors || []).join(' & '),
       isbn,
-      published: firebase.firestore.Timestamp.fromDate(parseDateUTC(
+      released: firebase.firestore.Timestamp.fromDate(parseDateUTC(
         json.volumeInfo.publishedDate
       )),
       pages: parseInt(json.volumeInfo.pageCount, 10),
@@ -61,7 +61,7 @@ const movies = {
     }
   },
   generateIndexEntry: (item) => {
-    const year = timestampToDate(item.published).getUTCFullYear()
+    const year = timestampToDate(item.released).getUTCFullYear()
 
     return {
       primaryText: item.title,
@@ -91,9 +91,9 @@ const movies = {
     label: 'ISBN',
     icon: 'line_weight'
   }, {
-    id: 'published',
+    id: 'released',
     type: 'date',
-    label: 'Published'
+    label: 'Released'
   }, {
     id: 'pages',
     type: 'number',
