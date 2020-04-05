@@ -38,6 +38,16 @@ const games = {
       notes: null
     }
   },
+  blankItem: {
+    comicVineGUID: '',
+    title: '',
+    publisher: '',
+    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    issues: 0,
+    read: false,
+    links: [],
+    notes: null
+  },
   generateIndexEntry: item => ({
     primaryText: item.title,
     secondaryText: timestampToDate(item.released).getUTCFullYear()

@@ -42,6 +42,17 @@ const tv = {
       notes: null
     }
   },
+  blankItem: {
+    tmdbID: 0,
+    title: '',
+    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    runtime: 0,
+    aspectRatio: null,
+    seasons: [],
+    exhausted: false,
+    links: [],
+    notes: null
+  },
   generateIndexEntry: item => ({
     primaryText: item.title,
     secondaryText: timestampToDate(item.released).getUTCFullYear()

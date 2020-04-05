@@ -54,6 +54,18 @@ const games = {
       notes: null
     }
   },
+  blankItem: {
+    giantBombGUID: '',
+    title: '',
+    developer: '',
+    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    beat: false,
+    exhausted: false,
+    releases: [],
+    mods: [],
+    links: [],
+    notes: null
+  },
   generateIndexEntry: item => ({
     primaryText: item.title,
     secondaryText: timestampToDate(item.released).getUTCFullYear()

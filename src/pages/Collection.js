@@ -68,6 +68,9 @@ class Collection extends React.Component {
         <Button raised onClick={this.newSearch}>
           Search
         </Button>
+        <Button raised onClick={this.addBlankItem}>
+          Manual Entry
+        </Button>
 
         {this.renderSearchResults()}
       </div>
@@ -169,6 +172,10 @@ class Collection extends React.Component {
 
   addResultGenerator = id => () => {
     this.props.createItem(this.props.user.uid, this.props.name, id)
+  }
+
+  addBlankItem = () => {
+    this.props.createItem(this.props.user.uid, this.props.name)
   }
 }
 

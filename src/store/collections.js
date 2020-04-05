@@ -104,13 +104,16 @@ export const saveItem = (userID, name, id, item) => async (dispatch, state) => {
   dispatch(setItem(name, id, { redirect: '/' + name }))
 }
 
-export const createItem = (userID, name, apiID) => async (dispatch, state) => {
+export const createItem = (userID, name, apiID = null) => async (dispatch, state) => {
   const type = types[name]
   const apiFetch = firebase.functions().httpsCallable('apiFetch')
+  let item = type.blankItem
 
   try {
-    const response = await apiFetch({ type: name, id: apiID })
-    const item = type.fetchTransform(response.data)
+    if (apiID !== null) {
+      const response = await apiFetch({ type: name, id: apiID })
+      item = type.fetchTransform(response.data)
+    }
 
     const db = firebase.firestore()
     const userDoc = db.collection('users').doc(userID)

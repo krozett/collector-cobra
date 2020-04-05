@@ -28,6 +28,15 @@ const music = {
     links: [],
     notes: null
   }),
+  blankItem: {
+    discogsID: 0,
+    title: '',
+    artist: '',
+    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    listened: false,
+    links: [],
+    notes: null
+  },
   generateIndexEntry: (item) => {
     const year = timestampToDate(item.released).getUTCFullYear()
 

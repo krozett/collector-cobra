@@ -60,6 +60,17 @@ const movies = {
       notes: null
     }
   },
+  blankItem: {
+    googleBooksID: '',
+    title: '',
+    author: '',
+    isbn: '',
+    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    pages: 0,
+    read: false,
+    links: [],
+    notes: null
+  },
   generateIndexEntry: (item) => {
     const year = timestampToDate(item.released).getUTCFullYear()
 

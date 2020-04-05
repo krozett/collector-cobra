@@ -32,6 +32,20 @@ const movies = {
     }],
     notes: null
   }),
+  blankItem: {
+    tmdbID: 0,
+    title: '',
+    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    runtime: 0,
+    aspectRatio: null,
+    watched: false,
+    exhausted: false,
+    links: [{
+      title: 'IMDB',
+      uri: 'https://www.imdb.com/title/'
+    }],
+    notes: null
+  },
   generateIndexEntry: item => ({
     primaryText: item.title,
     secondaryText: timestampToDate(item.released).getUTCFullYear()
@@ -77,6 +91,12 @@ const movies = {
     icon: 'list',
     links: true
   }, {
+/*    id: 'connections',
+    type: 'array',
+    label: 'Connections',
+    icon: 'list',
+    connections: true
+  }, {*/
     id: 'notes',
     type: 'text',
     label: 'Notes',
