@@ -62,6 +62,7 @@ class Collection extends React.Component {
           id="query"
           label={type.searchLabel}
           onChange={this.changeQuery}
+          onKeyPress={this.keyPress}
         />
 
         <Button raised onClick={this.newSearch}>
@@ -140,6 +141,12 @@ class Collection extends React.Component {
     this.setState({
       query: text
     })
+  }
+
+  keyPress = event => {
+    if (event.key === 'Enter') {
+      this.newSearch()
+    }
   }
 
   search = page => {
