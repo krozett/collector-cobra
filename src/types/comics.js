@@ -25,11 +25,12 @@ const games = {
     const url = json.results.site_detail_url.replace(/\/$/, '')
     const id = url.split('/').pop()
     const released = parseDateUTC(json.results.start_year)
+    const publisher = json.results.publisher || {}
 
     return {
       comicVineGUID: id,
       title: json.results.name,
-      publisher: json.results.publisher.name,
+      publisher: publisher.name || '',
       released: firebase.firestore.Timestamp.fromDate(released),
       issues: json.results.count_of_issues,
       read: false,

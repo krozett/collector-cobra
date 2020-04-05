@@ -17,7 +17,7 @@ const games = {
     json.number_of_total_results
   ],
   fetchTransform: (json) => {
-    const developer = json.results.developers.map(dev => dev.name).join(' & ')
+    const developers = json.results.developers || []
     const year = json.results.expected_release_year
     const month = json.results.expected_release_month
     const day = json.results.expected_release_day
@@ -30,20 +30,21 @@ const games = {
     }
 
     // But if needed, we can construct it from the 'expected' bits
-    else if (year && month && day) {
-      dateObj = new Date(year, month - 1, day)
-      released = parseDateUTC(dateObj)
-    }
+    else {
+      if (year && month && day) {
+        dateObj = new Date(year, month - 1, day)
+      }
+      else if (year) {
+        dateObj = new Date(year, 0, 1)
+      }
 
-    else if (year) {
-      dateObj = new Date(year, 0, 1)
       released = parseDateUTC(dateObj)
     }
 
     return {
       giantBombGUID: json.results.guid,
       title: json.results.name,
-      developer,
+      developer: developers.map(dev => dev.name).join(' & '),
       released: firebase.firestore.Timestamp.fromDate(released),
       beat: false,
       exhausted: false,
