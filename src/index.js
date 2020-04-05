@@ -26,7 +26,9 @@ if (emulatorURL) {
 
 const provider = (
   <Provider store={store}>
-    <App />
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
   </Provider>
 )
 
