@@ -91,12 +91,6 @@ const movies = {
     icon: 'list',
     links: true
   }, {
-/*    id: 'connections',
-    type: 'array',
-    label: 'Connections',
-    icon: 'list',
-    connections: true
-  }, {*/
     id: 'notes',
     type: 'text',
     label: 'Notes',
