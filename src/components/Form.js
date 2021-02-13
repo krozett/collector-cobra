@@ -82,10 +82,6 @@ class Form extends React.Component {
   }
 
   renderDatePicker(field) {
-    if (field.value) {
-      field.value = timestampToDate(field.value)
-    }
-
     return (
       <DatePicker
         key={field.id}
@@ -95,7 +91,7 @@ class Form extends React.Component {
         leftIcon={this.renderIcon(field.icon)}
         className="md-inline-block"
         fullWidth={!field.inline}
-        defaultValue={field.value}
+        defaultValue={field.value && timestampToDate(field.value)}
         onChange={this.changeDateGenerator(field.id)}
       />
     )
