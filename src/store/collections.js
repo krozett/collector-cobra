@@ -1,6 +1,7 @@
 import firebase from 'firebase'
 
 import types from 'types'
+import { deleteSearchResult, decrementSearchTotal } from 'store/search'
 
 const SET_COLLECTION = 'SET_COLLECTION'
 const SET_ITEM = 'SET_ITEM'
@@ -134,6 +135,11 @@ export const createItem = (userID, name, apiID = null) => async (dispatch, state
       ...item,
       ...indexEntry
     }))
+
+    if (apiID) {
+      dispatch(deleteSearchResult(apiID))
+      dispatch(decrementSearchTotal())
+    }
   }
 
   catch (err) {
