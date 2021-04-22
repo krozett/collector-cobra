@@ -95,14 +95,13 @@ class Collection extends React.Component {
     }
 
     const rows = results.map((result) => {
-      const addIcon = (
-        <FontIcon onClick={this.addResultGenerator(result.id)}>
-          add
-        </FontIcon>
-      )
-
       const link = (
-        <a href={result.uri} target="_blank" rel="noopener noreferrer">
+        <a
+          href={result.uri}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: 'block' }}
+        >
           <FontIcon>
             link
           </FontIcon>
@@ -111,8 +110,13 @@ class Collection extends React.Component {
 
       return (
         <TableRow key={result.id} selectable={false}>
-          <TableColumn>
-            {addIcon}
+          <TableColumn
+            style={{ cursor: 'pointer' }}
+            onClick={this.addResultGenerator(result.id)}
+          >
+            <FontIcon>
+              add
+            </FontIcon>
           </TableColumn>
           <TableColumn>
             {result.display}
