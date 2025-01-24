@@ -1,8 +1,8 @@
-const functions = require('firebase-functions')
+const { HttpsError } = require('firebase-functions/v2/https')
 
-const requireAuth = (context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Unauthenticated')
+const requireAuth = (request) => {
+  if (!request.auth) {
+    throw new HttpsError('unauthenticated', 'Unauthenticated')
   }
 }
 
