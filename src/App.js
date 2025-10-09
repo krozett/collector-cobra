@@ -30,7 +30,7 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <NavigationDrawer
-          toolbarTitle="Collector Cobra"
+          toolbarTitle="The Collector Cobra"
           drawerTitle={this.renderUserTitle()}
           navItems={this.renderNavItems()}
         >
