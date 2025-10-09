@@ -69,7 +69,7 @@ class Collection extends React.Component {
           Search
         </Button>
         <Button raised onClick={this.addBlankItem}>
-          Manual Entry
+          Manuel Entry
         </Button>
 
         {this.renderSearchResults()}
