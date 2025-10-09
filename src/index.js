@@ -11,12 +11,12 @@ import 'index.css'
 import 'react-md/dist/react-md.green-deep_orange.min.css'
 
 initializeApp({
-  apiKey: "AIzaSyCn91OyZY__3iXLgXeSQq-sqAtnwBic2nc",
-  authDomain: "collector-cobra-new.firebaseapp.com",
-  projectId: "collector-cobra-new",
-  storageBucket: "collector-cobra-new.firebasestorage.app",
-  messagingSenderId: "506562003941",
-  appId: "1:506562003941:web:f4568b47d254b231d4650c"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
 })
 
 // Allow functions URL base to be overridden
