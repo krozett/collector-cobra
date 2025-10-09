@@ -10,6 +10,7 @@ import * as serviceWorker from 'serviceWorker'
 import 'index.css'
 import 'react-md/dist/react-md.green-deep_orange.min.css'
 
+console.log(process.env)
 initializeApp({
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
