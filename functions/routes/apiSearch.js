@@ -1,105 +1,109 @@
-const functions = require('firebase-functions')
-const URLSearchParams = require('@ungap/url-search-params')
+const { defineString } = require('firebase-functions/params')
+const { HttpsError } = require('firebase-functions/v2/https')
 const fetch = require('node-fetch')
+
+const comicvineKey = defineString('API_COMICVINE_KEY')
+const giantbombKey = defineString('API_GIANTBOMB_KEY')
+const tmdbKey = defineString('API_TMDB_KEY')
+const discogsKey = defineString('API_DISCOGS_KEY')
+const discogsSecret = defineString('API_DISCOGS_SECRET')
 
 const gameFields = [
   'guid',
   'name',
   'original_release_date',
   'expected_release_year',
-  'site_detail_url'
+  'site_detail_url',
 ]
 
 const comicFields = [
   'name',
   'start_year',
-  'site_detail_url'
+  'site_detail_url',
 ]
 
-const apiSearch = async (data) => {
-  const apiKeys = functions.config().api
-
+const apiSearch = async (request) => {
+  const page = request.data.page || 1
   let base
   let params = {}
-  let page = data.page || 1
   let msg
 
-  switch (data.type) {
+  switch (request.data.type) {
     case 'books':
       base = 'https://www.googleapis.com/books/v1/volumes'
       params = {
-        q: data.query,
+        q: request.data.query,
         country: 'US',
         maxResults: 20,
-        startIndex: (page - 1) * 20
+        startIndex: (page - 1) * 20,
       }
       break
 
     case 'comics':
       base = 'https://comicvine.gamespot.com/api/volumes/'
       params = {
-        api_key: apiKeys.comicvine.key,
+        api_key: comicvineKey.value(),
         format: 'json',
         field_list: comicFields.join(','),
-        filter: 'name:' + data.query,
-        offset: (page - 1) * 100
+        filter: 'name:' + request.data.query,
+        offset: (page - 1) * 100,
       }
       break
 
     case 'games':
       base = 'https://www.giantbomb.com/api/games/'
       params = {
-        api_key: apiKeys.giantbomb.key,
+        api_key: giantbombKey.value(),
         format: 'json',
         field_list: gameFields.join(','),
-        filter: 'name:' + data.query,
-        offset: (page - 1) * 100
+        filter: 'name:' + request.data.query,
+        offset: (page - 1) * 100,
       }
       break
 
     case 'movies':
       base = 'https://api.themoviedb.org/3/search/movie'
       params = {
-        api_key: apiKeys.tmdb.key,
+        api_key: tmdbKey.value(),
         language: 'en-US',
         include_adult: true,
-        query: data.query,
-        page
+        query: request.data.query,
+        page,
       }
       break
 
     case 'music':
       base = 'https://api.discogs.com/database/search'
       params = {
-        key: apiKeys.discogs.key,
-        secret: apiKeys.discogs.secret,
+        key: discogsKey.value(),
+        secret: discogsSecret.value(),
         type: 'release',
-        title: data.query,
-        page
+        title: request.data.query,
+        page,
       }
       break
 
     case 'tv':
       base = 'https://api.themoviedb.org/3/search/tv'
       params = {
-        api_key: apiKeys.tmdb.key,
+        api_key: tmdbKey.value(),
         language: 'en-US',
-        query: data.query,
-        page
+        query: request.data.query,
+        page,
       }
       break
 
     default:
       msg = 'Invalid collection type'
-      throw new functions.https.HttpsError('invalid-argument', msg)
+      throw new HttpsError('invalid-argument', msg)
   }
 
-  const url = base + '?' + new URLSearchParams(params)
+  const url = base + '?' + new URLSearchParams(params).toString()
   const response = await fetch(url)
 
   if (!response.ok) {
     const err = await response.text()
-    throw new functions.https.HttpsError('internal', err)
+    throw new HttpsError('internal', err)
   }
 
   return await response.json()
