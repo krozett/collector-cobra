@@ -130,7 +130,6 @@ function Form({ fields, onSave }) {
         onBlur={changeField(field)}
       />
     )
-    //onChange={changeField(field)}
   }
 
   const SortableList = SortableContainer(({ fieldId, items, subfields }) => {
