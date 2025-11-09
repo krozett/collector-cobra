@@ -1,9 +1,9 @@
-import firebase from 'firebase'
+import { Timestamp } from 'firebase/firestore'
 
-import parseDateUTC from 'helpers/parseDateUTC'
-import timestampToDate from 'helpers/timestampToDate'
+import parseDateUTC from '@/helpers/parseDateUTC'
+import timestampToDate from '@/helpers/timestampToDate'
 
-const movies = {
+const books = {
   label: 'Books',
   icon: 'book',
   searchLabel: 'Book Title',
@@ -51,9 +51,7 @@ const movies = {
       title: json.volumeInfo.title,
       author: (json.volumeInfo.authors || []).join(' & '),
       isbn,
-      released: firebase.firestore.Timestamp.fromDate(parseDateUTC(
-        json.volumeInfo.publishedDate
-      )),
+      released: Timestamp.fromDate(parseDateUTC(json.volumeInfo.publishedDate)),
       pages: parseInt(json.volumeInfo.pageCount, 10),
       read: false,
       links: [],
@@ -65,7 +63,7 @@ const movies = {
     title: '',
     author: '',
     isbn: '',
-    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    released: Timestamp.fromDate(new Date()),
     pages: 0,
     read: false,
     links: [],
@@ -128,4 +126,4 @@ const movies = {
   }]
 }
 
-export default movies
+export default books

@@ -1,9 +1,9 @@
-import firebase from 'firebase'
+import { Timestamp } from 'firebase/firestore'
 
-import parseDateUTC from 'helpers/parseDateUTC'
-import timestampToDate from 'helpers/timestampToDate'
+import parseDateUTC from '@/helpers/parseDateUTC'
+import timestampToDate from '@/helpers/timestampToDate'
 
-const games = {
+const comics = {
   label: 'Comics',
   icon: 'image',
   searchLabel: 'Comic Title',
@@ -31,7 +31,7 @@ const games = {
       comicVineGUID: id,
       title: json.results.name,
       publisher: publisher.name || '',
-      released: firebase.firestore.Timestamp.fromDate(released),
+      released: Timestamp.fromDate(released),
       issues: json.results.count_of_issues,
       read: false,
       links: [],
@@ -42,7 +42,7 @@ const games = {
     comicVineGUID: '',
     title: '',
     publisher: '',
-    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    released: Timestamp.fromDate(new Date()),
     issues: 0,
     read: false,
     links: [],
@@ -96,4 +96,4 @@ const games = {
   }]
 }
 
-export default games
+export default comics

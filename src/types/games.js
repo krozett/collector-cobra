@@ -1,7 +1,7 @@
-import firebase from 'firebase'
+import { Timestamp } from 'firebase/firestore'
 
-import parseDateUTC from 'helpers/parseDateUTC'
-import timestampToDate from 'helpers/timestampToDate'
+import parseDateUTC from '@/helpers/parseDateUTC'
+import timestampToDate from '@/helpers/timestampToDate'
 
 const games = {
   label: 'Games',
@@ -45,7 +45,7 @@ const games = {
       giantBombGUID: json.results.guid,
       title: json.results.name,
       developer: developers.map(dev => dev.name).join(' & '),
-      released: firebase.firestore.Timestamp.fromDate(released),
+      released: Timestamp.fromDate(released),
       beat: false,
       exhausted: false,
       releases: [],
@@ -58,7 +58,7 @@ const games = {
     giantBombGUID: '',
     title: '',
     developer: '',
-    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    released: Timestamp.fromDate(new Date()),
     beat: false,
     exhausted: false,
     releases: [],
