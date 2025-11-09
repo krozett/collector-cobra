@@ -1,7 +1,7 @@
-import firebase from 'firebase'
+import { Timestamp } from 'firebase/firestore'
 
-import parseDateUTC from 'helpers/parseDateUTC'
-import timestampToDate from 'helpers/timestampToDate'
+import parseDateUTC from '@/helpers/parseDateUTC'
+import timestampToDate from '@/helpers/timestampToDate'
 
 const movies = {
   label: 'Movies',
@@ -19,9 +19,7 @@ const movies = {
   fetchTransform: json => ({
     tmdbID: parseInt(json.id, 10),
     title: json.title,
-    released: firebase.firestore.Timestamp.fromDate(parseDateUTC(
-      json.release_date
-    )),
+    released: Timestamp.fromDate(parseDateUTC(json.release_date)),
     runtime: parseInt(json.runtime, 10),
     aspectRatio: null,
     watched: false,
@@ -35,7 +33,7 @@ const movies = {
   blankItem: {
     tmdbID: 0,
     title: '',
-    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    released: Timestamp.fromDate(new Date()),
     runtime: 0,
     aspectRatio: null,
     watched: false,

@@ -1,7 +1,7 @@
-import firebase from 'firebase'
+import { Timestamp } from 'firebase/firestore'
 
-import parseDateUTC from 'helpers/parseDateUTC'
-import timestampToDate from 'helpers/timestampToDate'
+import parseDateUTC from '@/helpers/parseDateUTC'
+import timestampToDate from '@/helpers/timestampToDate'
 
 const music = {
   label: 'Music',
@@ -21,9 +21,7 @@ const music = {
     discogsID: parseInt(json.id, 10),
     title: json.title,
     artist: json.artists_sort,
-    released: firebase.firestore.Timestamp.fromDate(parseDateUTC(
-      json.released
-    )),
+    released: Timestamp.fromDate(parseDateUTC(json.released)),
     listened: false,
     links: [],
     notes: null
@@ -32,7 +30,7 @@ const music = {
     discogsID: 0,
     title: '',
     artist: '',
-    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    released: Timestamp.fromDate(new Date()),
     listened: false,
     links: [],
     notes: null

@@ -1,7 +1,7 @@
-import firebase from 'firebase'
+import { Timestamp } from 'firebase/firestore'
 
-import parseDateUTC from 'helpers/parseDateUTC'
-import timestampToDate from 'helpers/timestampToDate'
+import parseDateUTC from '@/helpers/parseDateUTC'
+import timestampToDate from '@/helpers/timestampToDate'
 
 const tv = {
   label: 'TV',
@@ -24,7 +24,7 @@ const tv = {
 
       return {
         name: season.name,
-        released: firebase.firestore.Timestamp.fromDate(seasonReleased),
+        released: Timestamp.fromDate(seasonReleased),
         episodes: parseInt(season.episode_count, 10),
         watched: false
       }
@@ -33,7 +33,7 @@ const tv = {
     return {
       tmdbID: parseInt(json.id, 10),
       title: json.name,
-      released: firebase.firestore.Timestamp.fromDate(released),
+      released: Timestamp.fromDate(released),
       runtime: parseInt(json.episode_run_time[0], 10),
       aspectRatio: null,
       seasons,
@@ -45,7 +45,7 @@ const tv = {
   blankItem: {
     tmdbID: 0,
     title: '',
-    released: firebase.firestore.Timestamp.fromDate(new Date()),
+    released: Timestamp.fromDate(new Date()),
     runtime: 0,
     aspectRatio: null,
     seasons: [],
