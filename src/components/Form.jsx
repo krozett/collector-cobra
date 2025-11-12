@@ -128,6 +128,7 @@ function Form({ fields, onSave }) {
         defaultValue={field.value}
         disabled={!!field.apiURI}
         onBlur={changeField(field)}
+        onWheel={(event) => event.target.blur()}
       />
     )
   }
