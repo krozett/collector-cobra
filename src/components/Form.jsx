@@ -56,6 +56,7 @@ function Form({ fields, onSave }) {
         <DatePicker
           label={field.label}
           defaultValue={moment(timestampToDate(field.value))}
+          sx={{ minWidth: 200 }}
           onChange={changeField(field)}
         />
       </LocalizationProvider>
@@ -128,49 +129,55 @@ function Form({ fields, onSave }) {
         defaultValue={field.value}
         disabled={!!field.apiURI}
         onBlur={changeField(field)}
+        onWheel={(event) => event.target.blur()}
       />
     )
   }
 
   const SortableList = SortableContainer(({ fieldId, items, subfields }) => {
-    const elements = items.map((item, index) => (
+    const handles = items.map((item, i) => (
       <SortableItem
-        key={index}
+        key={i}
         collection={fieldId}
-        index={index}
-        fieldId={fieldId}
-        i={index}
-        item={item}
-        subfields={subfields}
+        index={i}
       />
     ))
 
+    const inputs = items.map((item, i) => {
+      const subInputs = subfields.map((subfield) => renderField({
+        ...subfield,
+        id: fieldId + '.' + i + '.' + subfield.id,
+        value: item[subfield.id],
+      }))
+
+      return (
+        <ListItem key={i}>
+          {subInputs}
+
+          <Button onClick={() => deleteRow(fieldId, i)}>
+            Delete
+          </Button>
+        </ListItem>
+      )
+    })
+
     return (
-      <List>
-        {elements}
-      </List>
+      <Box style={{ display: 'flex', flexDirection: 'row' }}>
+        <List>
+          {handles}
+        </List>
+        <List style={{ flex: 1 }}>
+          {inputs}
+        </List>
+      </Box>
     )
   })
 
-  const SortableItem = SortableElement(({ fieldId, i, item, subfields }) => {
-    const inputs = subfields.map((subfield) => renderField({
-      ...subfield,
-      id: fieldId + '.' + i + '.' + subfield.id,
-      value: item[subfield.id],
-    }))
-
-    return (
-      <ListItem>
-        <Handle />
-
-        {inputs}
-
-        <Button onClick={() => deleteRow(fieldId, i)}>
-          Delete
-        </Button>
-      </ListItem>
-    )
-  })
+  const SortableItem = SortableElement(() => (
+    <ListItem style={{ height: '72px' }}>
+      <Handle />
+    </ListItem>
+  ))
 
   const Handle = SortableHandle(() => (
     <DragHandle />
