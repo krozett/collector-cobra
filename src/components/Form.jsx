@@ -57,7 +57,6 @@ function Form({ fields, onSave }) {
           label={field.label}
           sx={{ minWidth: 200 }}
           defaultValue={moment(timestampToDate(field.value))}
-          minDate="1700-01-01"
           onChange={changeField(field)}
         />
       </LocalizationProvider>
