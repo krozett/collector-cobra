@@ -55,8 +55,9 @@ function Form({ fields, onSave }) {
       <LocalizationProvider key={field.id} dateAdapter={AdapterMoment}>
         <DatePicker
           label={field.label}
-          defaultValue={moment(timestampToDate(field.value))}
           sx={{ minWidth: 200 }}
+          defaultValue={moment(timestampToDate(field.value))}
+          minDate="1700-01-01"
           onChange={changeField(field)}
         />
       </LocalizationProvider>
