@@ -1,5 +1,9 @@
 const timestampToDate = (timestamp) => {
-  let dateObj = new Date(timestamp.seconds * 1000)
+  let dateObj = new Date()
+
+  if (timestamp && timestamp.seconds) {
+    dateObj = new Date(timestamp.seconds * 1000)
+  }
 
   const year = dateObj.getUTCFullYear()
   const month = dateObj.getUTCMonth()
