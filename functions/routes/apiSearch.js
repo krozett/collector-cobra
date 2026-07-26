@@ -2,6 +2,7 @@ const { defineString } = require('firebase-functions/params')
 const { HttpsError } = require('firebase-functions/v2/https')
 const fetch = require('node-fetch')
 
+const googleKey = defineString('API_GOOGLE_KEY')
 const comicvineKey = defineString('API_COMICVINE_KEY')
 const giantbombKey = defineString('API_GIANTBOMB_KEY')
 const tmdbKey = defineString('API_TMDB_KEY')
@@ -32,6 +33,7 @@ const apiSearch = async (request) => {
     case 'books':
       base = 'https://www.googleapis.com/books/v1/volumes'
       params = {
+        key: googleKey.value(),
         q: request.data.query,
         country: 'US',
         maxResults: 20,
