@@ -1,6 +1,5 @@
 const { defineString } = require('firebase-functions/params')
 const { HttpsError } = require('firebase-functions/v2/https')
-const fetch = require('node-fetch')
 
 const googleKey = defineString('API_GOOGLE_KEY')
 const comicvineKey = defineString('API_COMICVINE_KEY')
